@@ -1,0 +1,114 @@
+<!-- Got idea on 13/8/25 after leaving videoFactory and i was on a break due to some reasons but not i'm trying to maintain consistency -->
+<!-- Started 22/8/25 --->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Ayatlens</title>
+ <link rel="stylesheet" href="style.css">
+</head>
+ 
+ 
+<body>
+  <h1>Ayatlens</h1>
+  <!-- Input Tag for Query -->
+  <input id="get_query" type="text">
+  <button id="search_butn" onclick='search_page()'>Search</button>
+  <!-- Random surah Container -->
+  <h3 id="sub-heading">Daily Surah</h3>
+  <div id="random_surah_cont">
+    
+  </div>
+
+
+  <!-- Camera Page -->
+  <div id="cameraPage">
+    <div id="back" onclick="displayPage('cameraPage','display','none')">
+      Back
+    </div>
+    <button id="snapButton">
+      Snap
+    </button>
+  </div>
+  <!-- Saves Page -->
+  <div id="page">
+    <div id="back" onclick="displayPage('page','visibility','hidden')">
+      Back
+    </div>
+    <h3>Saves</h3>
+    <div id="save_ayat_container">
+      
+    </div>
+  </div>
+  
+    <!-- search Results Page -->
+  <div id="search_result">
+    <div id="back" onclick="displayPage('search_result','visibility','hidden')">
+      Back
+    </div>
+    <h3 id="hdhd">Search</h3>
+  </div>
+  
+  <!-- Result Page of Surah -->
+  <div id="obj_result">
+    <div id="back" onclick="displayPage('obj_result','visibility','hidden')">
+      Back
+    </div>
+    <h2 id="sub-heading">Image Capture</h2>
+      <div id="imgConatiner">
+      </div>
+    <!-- Main surah Container -->
+    <h1 id="query"></h1>
+    <h5 id="total_ayah"></h5>
+       <div id="mainSurahContainer">
+    </div>
+  </div>
+  <!-- Img On screen And Results -->
+  
+
+  
+  <!--<div id="mainSurahContainer">
+</div>-->
+  
+<!-- Error Box -->
+<div id="errorBox" class="error-box">
+  <span id="errorMsg">Something went wrong!</span>
+  <button onclick="hideError()">×</button>
+</div>
+  
+  
+  
+  <!-- ====== Loading overlay (paste in <body>) ====== -->
+<div id="app-loader" class="app-loader" aria-hidden="true" role="status" aria-live="polite">
+  <div class="loader-box">
+    <svg class="spinner" viewBox="0 0 50 50" aria-hidden="true">
+      <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+    </svg>
+    <div class="loader-text">Loading…</div>
+  </div>
+</div>
+
+<!-- ====== Optional: control buttons to demo ======
+<button onclick="showLoader()">Show</button>
+<button onclick="hideLoader()">Hide</button>
+-->
+
+  
+  
+  
+    <!-- Navigation Bar -->
+  <div id="bottomNav">
+    <div id="home">
+      Home
+    </div>
+    <div id="cameraIcon">
+      Camera
+    </div>
+    <div onclick='displayPage("page","visibility","visible")' id="saves">
+      Saves
+    </div>
+  </div>
+  
+  <script src="main.js"></script>
+</body>
+</html>

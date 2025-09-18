@@ -1,0 +1,344 @@
+/* Make body fill the page */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  @font-face {
+    font-family: 'montserrat';
+    src: url(/fonts/Montserrat-VariableFont_wght.ttf);
+    
+  }
+  font-family: montserrat;
+  
+ /*overflow: hidden;*/
+}
+
+/* Bottom navigation bar */
+#bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: aliceblue;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000; /* keep it above all other elements */
+}
+
+#cameraIcon,#home,#saves{
+  color: white;
+  font-size: 18px;
+  height: 30px;
+  cursor: pointer;
+  margin-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: blueviolet;
+  border-radius: 10px;
+}
+
+/* Camera page */
+#cameraPage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: black;
+  display: none;/* hidden until camera is opened */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* Fullscreen video */
+#cameraPage video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Snap button */
+#snapButton {
+  position: absolute;
+  bottom: 80px;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 30;
+}
+
+/* Captured photo */
+#capturedImage {
+  height: 400px;
+  width: 340px;
+  border-radius: 10px;
+  display: none;
+}
+
+/*Img on homescreen*/
+#imgConatiner{
+  height: 400px;
+  width: 340px;
+  margin-top: 20px;
+  margin-left: 10px;
+  border-radius: 10px;
+  background-color: greenyellow;
+}
+
+/* ###### Ayah Box Style ###### */
+.ayahContainer{
+  display: block;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 10px;
+  width: 340px;
+  background-color: skyblue;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.verseKey{
+  display: inline;
+  height: auto;
+  width: auto;
+  margin-left: 10px;
+  border-radius: 5px;
+  background-color: lightgreen;
+}
+.query{
+  display: block;
+  font-size: 25px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+.surah{
+  margin-left:60px;
+  margin-right: 15px;
+  border-radius: 5px;
+  padding: 5px;
+  font-weight: lighter;
+  background-color: lightyellow;
+}
+.save_button{
+  display: inline;
+  height: 10px;
+  width: 10px;
+  background: red;
+}
+
+#page{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  visibility: hidden; /* hidden until camera is opened */
+  z-index: 10;
+}
+/*Back Button*/
+#back{
+  color: white;
+  background: blueviolet;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  height: 20px;
+  width: 40px;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+/* Search Box Style */
+#get_query{
+  height: 40px;
+  margin-left: 10px;
+  width: 250px;
+  border-radius: 15px;
+  animation: none;
+}
+#search_butn{
+  height: 45px;
+  border-radius: 15px;
+}
+/*##### Random Surah Surah #####*/
+.random_conatiner{
+  /*min-height: 200px;*/
+  height: auto;
+  width: 340px;
+  background-color: skyblue;
+  margin-left: 10px;
+  margin-top: 10px;
+  border-radius: 15px;
+}
+
+#sub-heading{
+  padding: 0;
+  margin: 0;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.random_ayah{
+  
+  margin-left: 15px;
+  margin-right: 15px;
+}
+.random_ayah_versekey{
+  background: green;
+  margin-top: 20px;
+  display: inline-block;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px;
+}
+
+/* ##### Search Page ##### */
+
+#search_result{
+  position: absolute;
+  top: 0;
+  width: 360px;
+  min-height: 600px;
+  height: auto;
+  z-index: 10;
+  background: white;
+  visibility: hidden; /* hidden until camera is opened */
+  
+}
+
+#obj_result{
+  position: absolute;
+  top: 0;
+  width: 360px;
+  height: 120%;
+  z-index: 10;
+  background: white;
+  visibility: hidden; /* hidden until camera is opened */
+}
+
+/* ====== Loader CSS ====== */
+.app-loader {
+  position: fixed;
+  inset: 0;                    /* covers full screen */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.4); /* dim background */
+  z-index: 9999;
+  visibility: hidden;          /* hidden by default */
+  opacity: 0;
+  transition: opacity 200ms ease, visibility 200ms ease;
+  pointer-events: none;        /* don't block when hidden */
+}
+
+/* show by toggling .active */
+.app-loader.active {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: all;         /* block interactions while visible */
+}
+
+.loader-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  padding: 18px 22px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.25);
+  min-width: 160px;
+}
+
+/* SVG spinner */
+.spinner {
+  width: 46px;
+  height: 46px;
+  transform-origin: center;
+  animation: rotate 1s linear infinite;
+}
+.spinner .path {
+  stroke: #111;
+  stroke-linecap: round;
+  stroke-dasharray: 90;
+  stroke-dashoffset: 60;
+  animation: dash 1s ease-in-out infinite;
+}
+
+/* label */
+.loader-text {
+  font-size: 14px;
+  color: #111;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* animations */
+@keyframes rotate {
+  100% { transform: rotate(360deg); }
+}
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 90;
+  }
+  50% {
+    stroke-dashoffset: 30;
+    transform: rotate(45deg);
+  }
+  100% {
+    stroke-dashoffset: 90;
+    transform: rotate(360deg);
+  }
+}
+
+/* small responsive tweak */
+@media (max-width:420px){
+  .loader-box { min-width: 140px; padding: 14px; }
+  .loader-text { font-size: 13px; }
+}
+
+.error-box {
+  display: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #f44336; /* red background */
+  color: white;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+  align-items: center; /* makes text & button aligned */
+}
+
+.error-box button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
