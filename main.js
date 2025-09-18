@@ -13,51 +13,45 @@ let videoElement;
 let canvas;
 let capturedImage;
 
+// ----------- IMAGE ANALYSIS ----------- //
 async function analyzeCapturedImage(base64Data) {
   showLoader("Analyzing image...");
   try {
-    const res = await fetch("https://ayatlens-backend.onrender.com/", {
+    const res = await fetch("https://ayatlens-backend.onrender.com/analyze-image", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ image_base64: base64Data })
     });
     
     const data = await res.json();
-    //console.log("Predictions:", data);
     return data;
   } catch (err) {
     console.error("Error sending image:", err);
-    showError("Image Detection Failed,Try Again");
+    showError("Image Detection Failed, Try Again");
   } finally {
     hideLoader();
   }
 }
+
 async function sendImageBase64(base64Img) {
   showLoader("Detecting objects...");
   try {
-    const response = await fetch("https://ayatlens-backend.onrender.com", {
+    const response = await fetch("https://ayatlens-backend.onrender.com/analyze-image", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ image: base64Img })
+      body: JSON.stringify({ image_base64: base64Img })
     });
     const result = await response.json();
-    //console.log(result);
     return result;
   } catch (err) {
     console.error("Error:", err);
-    showError("Image Detection Failed,Try Again");
+    showError("Image Detection Failed, Try Again");
   } finally {
     hideLoader();
   }
 }
 
-
-// Example: after capturing with canvas
-
-
-//irectly call it with a test URL
-//Create Divs on the Main page
-// --- container helpers (fixed) ---
+// --- container helpers --- //
 let raw;
 let raw_save_button;
 
@@ -70,8 +64,8 @@ function createContainer(main, container_class) {
   const container = document.createElement("div");
   container.classList.add(container_class);
   mainContainer.appendChild(container);
-  raw = container; // keep for addContainerData (compatible with your existing usage)
-  return container; // return so caller can also use it if needed
+  raw = container;
+  return container;
 }
 
 function addContainerData(className, text) {
@@ -80,39 +74,33 @@ function addContainerData(className, text) {
   box.innerText = text;
   if (!raw) {
     console.warn("addContainerData: raw is not set. Call createContainer first.");
-    // still return the box so caller can attach listeners if they want
     return box;
   }
   raw.appendChild(box);
   if (className === "save_button") raw_save_button = box;
-  return box; // <- IMPORTANT: return the created element so code can attach events to it
+  return box;
 }
 
-// --- display function (fixed) ---
-// --- display function (clean with H1 + H4 headers) ---
+// --- display function --- //
 function display(data, cont, contClass) {
   if (!data || !Array.isArray(data.results)) {
     console.warn("display: invalid data", data);
     return;
   }
   
-  // Create a wrapper so each search result set is grouped
   const wrapper = document.createElement("div");
   wrapper.classList.add("resultGroup");
   
-  // Add Query (H1)
   const queryBox = document.createElement("h1");
   queryBox.classList.add("queryTitle");
   queryBox.innerText = `Query: ${data.search_keyword || ""}`;
   wrapper.appendChild(queryBox);
   
-  // Add Total Verse (H4)
   const totalBox = document.createElement("h4");
   totalBox.classList.add("totalVerse");
   totalBox.innerText = `Total Verse: ${data.results.length}`;
   wrapper.appendChild(totalBox);
   
-  // Loop through ayahs
   for (let i = 0; i < data.results.length; i++) {
     const ayahContainer = document.createElement("div");
     ayahContainer.classList.add(contClass);
@@ -129,13 +117,8 @@ function display(data, cont, contClass) {
     saveBtn.classList.add("save_button");
     saveBtn.innerText = "Save";
     
-    // event listener
     (function(item) {
       saveBtn.addEventListener("click", () => {
-        //alert("Saved Successful");
-       // console.log(`Saved: text: ${item.text} versekey:${item.verse_key}`);
-        
-        // Direct append instead of createContainer
         const savedBox = document.createElement("div");
         savedBox.classList.add("ayahContainer");
         
@@ -163,12 +146,11 @@ function display(data, cont, contClass) {
     wrapper.appendChild(ayahContainer);
   }
   
-  // Append wrapper to main container
   const mainContainer = document.getElementById(cont);
   mainContainer.appendChild(wrapper);
 }
 
-// Example usage for search page
+// --- SEARCH PAGE --- //
 async function search_page() {
   const input_query = document.getElementById("get_query").value.trim();
   if (!input_query) return;
@@ -180,17 +162,17 @@ async function search_page() {
     const res = await fetch(`https://ayatlens-backend.onrender.com/search?query=${input_query}`);
     const data = await res.json();
     
-    // ✅ append results without removing old ones
     display(data, "search_result", "ayahContainer");
   } catch (err) {
     console.error("Error fetching search data:", err);
-    showError("Something Went Wrong")
+    showError("Something Went Wrong");
   }
 }
 
-// Show/Hide pages
+// --- PAGE VISIBILITY --- //
 function displayPage(id, type, style) {
   const page = document.getElementById(id);
+  if (!page) return;
   if (type === "visibility") {
     page.style.visibility = style;
   } else {
@@ -198,76 +180,55 @@ function displayPage(id, type, style) {
   }
 }
 
+// --- RANDOM AYAT --- //
 async function getRandomAyat() {
-  showLoader("Loading..."); // 👈 show before fetch starts
-  
+  showLoader("Loading...");
   try {
-    const res = await fetch("https://ayatlens-backend.onrender.com");
+    const res = await fetch("https://ayatlens-backend.onrender.com/random-ayat");
     const data = await res.json();
-    //console.log(data);
     
-    let n = data.ayahs.length; // your max value
+    if (!data.ayahs || !Array.isArray(data.ayahs)) {
+      console.error("Invalid ayahs data", data);
+      return;
+    }
+    
+    let n = data.ayahs.length;
     let randomNum = Math.floor(Math.random() * n);
     
-    // Add surah to UI
     createContainer("random_surah_cont", "random_conatiner");
     addContainerData("random_ayah", data.ayahs[randomNum].text);
     addContainerData("random_ayah_versekey", `${data.surah_number}:${randomNum}`);
-    
-    //console.log(n);
-   // console.log(data.ayahs[randomNum].text);
   } catch (err) {
     console.error("Error fetching random ayat:", err);
-    showError("Network Error Try Again");
+    showError("Network Error, Try Again");
   } finally {
-    hideLoader(); // 👈 always hide loader after work finishes
+    hideLoader();
   }
 }
 
-// Call it once page loads
+// Call random ayat once page loads
 getRandomAyat();
 
-//Get data from backend (ayats)
-
-let input_query = document.getElementById("get_query");
-
+// --- GET DATA FUNCTION --- //
 async function get_data(query) {
-  showLoader("Searching..."); // 👈 before fetch
+  showLoader("Searching...");
   try {
-    const res = await fetch(`https://ayatlens-backend.onrender.com/search?query=${input_query}`);
+    const res = await fetch(`https://ayatlens-backend.onrender.com/search?query=${query}`);
     const data = await res.json();
-    //console.log("Fetched:", data);
     display(data, "mainSurahContainer", "ayahContainer");
     return data;
   } catch (err) {
     console.error("Error:", err);
-    showError("Something Went Wrong ")
+    showError("Something Went Wrong");
     return null;
   } finally {
-    hideLoader(); // 👈 after work
+    hideLoader();
   }
 }
 
-
-
-
-//Adding Saves Page 
-function displayPage(ids,type,styles){
-  let page = document.getElementById(ids);
-  //`page.style.visibility = ${style}`;
-  //console.log(type)
-  if(type=="visibility"){
-    page.style.visibility = styles;
-    //console.log("if")
-  }else{
-    page.style.display = styles;
-    //console.log(type+":"+styles)
-  }
-}
-
-// Open camera when clicking bottom nav "Camera"
+// --- CAMERA HANDLING --- //
 cameraIcon.addEventListener("click", async () => {
-  showLoader("Starting Camera..")
+  showLoader("Starting Camera..");
   cameraPage.style.display = "flex";
   
   videoElement = document.createElement("video");
@@ -278,19 +239,16 @@ cameraIcon.addEventListener("click", async () => {
   
   try {
     videoStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { exact: "environment" } }, // back camera
+      video: { facingMode: { exact: "environment" } },
       audio: false
     });
     videoElement.srcObject = videoStream;
   } catch (err) {
-    //alert("Camera access denied or not available: " + err);
-    showError("Camera Access denied showError")
+    showError("Camera access denied or not available");
   } finally {
-    
-      hideLoader();
-   }
+    hideLoader();
+  }
   
-  // Prepare canvas for capturing
   if (!canvas) {
     canvas = document.createElement("canvas");
     capturedImage = document.createElement("img");
@@ -300,55 +258,34 @@ cameraIcon.addEventListener("click", async () => {
   }
 });
 
-// Capture photo on snap
-snapButton.addEventListener("click", () => {
-  if (!videoElement) return;
-  
-  canvas.width = videoElement.videoWidth;
-  canvas.height = videoElement.videoHeight;
-  
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-  
-  const dataURL = canvas.toDataURL("image/png");
-  capturedImage.src = dataURL;
-  
-  // ⏳ set timeout safety
-  
-  
-  (async () => {
-    let datas = await analyzeCapturedImage(dataURL);
-     
-    //console.log("analyze result", datas);
-    
-    if (datas) {
-      let predictionsArray = null;
-      if (Array.isArray(datas.predictions)) {
-        predictionsArray = datas.predictions;
-      } else if (Array.isArray(datas) && datas.length > 0) {
-        for (const el of datas) {
-          if (el && Array.isArray(el.predictions)) {
-            predictionsArray = el.predictions;
-            break;
+snapButton.addEventListener("click", async () => {
+        if (!videoElement) return;
+        
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+        
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        
+        const dataURL = canvas.toDataURL("image/png");
+        capturedImage.src = dataURL;
+        
+        let datas = await analyzeCapturedImage(dataURL);
+        
+        if (datas) {
+          let predictionsArray = datas.predictions || [];
+          if (predictionsArray.length > 0) {
+            for (let i = 0; i < predictionsArray.length; i++) {
+              await get_data(predictionsArray[i].tag);
+            }
+          } else {
+            showError("No Data Found!");
           }
         }
-      }
-      
-      if (predictionsArray) {
-        for (let i = 0; i < predictionsArray.length; i++) {
-         // console.log(predictionsArray[i].tag, predictionsArray[i].confidence);
-          get_data(predictionsArray[i].tag);
-        }
-      } else {
-        //console.log("No predictions array found in response:", datas);
-        showError("No Data Found !")
-      }
-    }
-  })();
-  
-  displayPage("capturedImage", "display", "block");
-  displayPage("cameraPage", "display", "none");
-  displayPage("obj_result", "visibility", "visible");
+        
+        displayPage("capturedImage", "display", "block");
+        displayPage("cameraPage", "display", "none");
+        displayPage("obj_result", "visibility","visible")
   
   if (videoElement) {
     videoElement.remove();
